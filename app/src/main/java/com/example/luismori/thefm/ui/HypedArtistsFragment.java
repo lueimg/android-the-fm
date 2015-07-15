@@ -14,12 +14,19 @@ import android.view.ViewGroup;
 import com.example.luismori.thefm.MainActivity;
 import com.example.luismori.thefm.R;
 import com.example.luismori.thefm.domain.Artist;
+import com.example.luismori.thefm.io.LastFmApiAdapter;
+import com.example.luismori.thefm.io.LastFmApiService;
+import com.example.luismori.thefm.io.model.HypedArtistsResponse;
 import com.example.luismori.thefm.ui.adapter.HypedArtistsAdapter;
 
 import java.util.ArrayList;
 
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
-public class HypedArtistsFragment extends Fragment {
+
+public class HypedArtistsFragment extends Fragment implements Callback<HypedArtistsResponse> {
 
 
     public static final int NUM_COLMNS = 2;
@@ -48,9 +55,17 @@ public class HypedArtistsFragment extends Fragment {
         View root = inflater.inflate(R.layout.fragment_hyped_artists, container, false);
         mHypedArtistsList = (RecyclerView) root.findViewById(R.id.hyped_artist_list);
         setupArtistsList();
-        setDummyContent();
+        //setDummyContent();
         return root;
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        LastFmApiAdapter.getApiService()
+                .getHypedArtists(this);
     }
 
     private void setupArtistsList() {
@@ -71,4 +86,14 @@ public class HypedArtistsFragment extends Fragment {
     }
 
 
+    @Override
+    public void success(HypedArtistsResponse hypedArtistsResponse, Response response) {
+        adapter.addAll(hypedArtistsResponse.getArtists());
+
+    }
+
+    @Override
+    public void failure(RetrofitError error) {
+        error.printStackTrace();
+    }
 }
