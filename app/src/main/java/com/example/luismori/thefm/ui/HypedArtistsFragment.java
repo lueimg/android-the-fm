@@ -59,6 +59,7 @@ public class HypedArtistsFragment extends Fragment {
         // configuracion para el recycler view sea un grid
         mHypedArtistsList.setLayoutManager(new GridLayoutManager(getActivity(), NUM_COLMNS));
         mHypedArtistsList.setAdapter(adapter);
+        mHypedArtistsList.addItemDecoration(new ItemOffsetDecoration(getActivity(), R.integer.offset));
     }
 
     private void setDummyContent() {
